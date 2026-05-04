@@ -57,17 +57,51 @@ with col1:
                     st.error(f"Failed to extract relationships: {e}")
 
 with col2:
-    st.subheader("2. View Graph Data")
-    st.markdown("Here are up to 100 relationships currently stored in your Graph Database.")
+    st.subheader("2. View Interactive Graph")
+    st.markdown("Here is the visual representation of your Graph Database.")
     
-    if st.button("Refresh Graph Data"):
+    if st.button("Refresh Graph View"):
         if db is not None:
             try:
                 triples = db.get_all_triples()
                 if triples:
-                    df = pd.DataFrame(triples)
-                    st.dataframe(df, use_container_width=True)
+                    from pyvis.network import Network
+                    import streamlit.components.v1 as components
+                    import tempfile
+                    import os
+                    
+                    # Create a PyVis network
+                    net = Network(height='500px', width='100%', directed=True, bgcolor='#ffffff', font_color='#333333')
+                    
+                    # Add nodes and edges
+                    added_nodes = set()
+                    for t in triples:
+                        src = t['source']
+                        tgt = t['target']
+                        rel = t['relation']
+                        
+                        if src not in added_nodes:
+                            net.add_node(src, label=src, color="#4A90E2", size=25)
+                            added_nodes.add(src)
+                        if tgt not in added_nodes:
+                            net.add_node(tgt, label=tgt, color="#50E3C2", size=25)
+                            added_nodes.add(tgt)
+                            
+                        net.add_edge(src, tgt, title=rel, label=rel, color="#999999", arrows="to")
+                    
+                    # Turn on some physics for a cooler layout
+                    net.toggle_physics(True)
+                    
+                    # Save and render the graph
+                    path = os.path.join(os.getcwd(), 'graph.html')
+                    net.save_graph(path)
+                    
+                    with open(path, 'r', encoding='utf-8') as f:
+                        source_code = f.read()
+                        
+                    # Display in Streamlit
+                    st.components.v1.html(source_code, height=520)
                 else:
                     st.info("The graph is currently empty. Extract some text on the left first!")
             except Exception as e:
-                st.error(f"Failed to fetch data from Neo4j: {e}")
+                st.error(f"Failed to fetch or render graph: {e}")
