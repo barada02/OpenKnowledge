@@ -1,5 +1,7 @@
 # 🧠 OpenKnowledge: Graph Builder
 
+![OpenKnowledge App](assets/app.png)
+
 OpenKnowledge is an intelligent web application that automatically reads unstructured text, extracts meaningful relationships, and builds a fully interactive Knowledge Graph. 
 
 By combining the natural language understanding of Large Language Models (LLMs) with the power of Graph Databases, this tool allows you to effortlessly map out networks of people, places, concepts, and companies just by typing!
@@ -83,3 +85,5 @@ Open the URL provided in the terminal (usually `http://localhost:8501`).
 1. **Extract Knowledge:** On the left panel of the web app, type a sentence like *"Apple was founded by Steve Jobs and Steve Wozniak in Cupertino."*
 2. **Save:** Click **"Extract and Save to Graph"**. You will see the raw JSON data extracted by the LLM.
 3. **Visualize:** On the right panel, click **"Refresh Graph View"** to see your brand new nodes and connections appear as floating, interactive bubbles!
+
+![Interactive Graph Visualization](assets/graph.png)
